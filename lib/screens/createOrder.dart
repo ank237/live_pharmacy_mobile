@@ -148,7 +148,7 @@ class _CreateOrderState extends State<CreateOrder> {
                             date: _deliveryDate.value.text,
                             isRepeating: repeating,
                             isDelivered: false,
-                            deliveredBy: '',
+                            deliveredBy: 'na',
                             deliveredOn: '',
                             modeOfPayment: '',
                             isPaid: false,

@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/provider/userProvider.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,17 +11,26 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<BoxModel> boxValues = [
-    BoxModel(onTapFunc: () {}, image: 'latest', name: 'Latest'),
-    BoxModel(onTapFunc: () {}, image: 'ongoing', name: 'Ongoing Deliveries'),
-    BoxModel(onTapFunc: () {}, image: 'schedule', name: 'Scheduled deliveries'),
-    BoxModel(onTapFunc: () {}, image: 'past', name: 'Past Deliveries'),
-    BoxModel(onTapFunc: () {}, image: 'payments', name: 'Payments'),
-    BoxModel(onTapFunc: () {}, image: 'notes', name: 'Notes'),
+    BoxModel(onTapFunc: 'latest', image: 'latest', name: 'Latest'),
+    BoxModel(onTapFunc: 'ongoing', image: 'ongoing', name: 'Ongoing Deliveries'),
+    BoxModel(onTapFunc: 'schedule', image: 'schedule', name: 'Scheduled deliveries'),
+    BoxModel(onTapFunc: 'past', image: 'past', name: 'Past Deliveries'),
+    BoxModel(onTapFunc: 'payments', image: 'payments', name: 'Payments'),
+    BoxModel(onTapFunc: 'notes', image: 'notes', name: 'Notes'),
   ];
-  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    if (userProvider.loggedInUser.role == 'manager') {
+      boxValues.removeAt(4);
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
@@ -53,7 +63,7 @@ class _HomeState extends State<Home> {
       ),
       body: Container(
         child: GridView.builder(
-          itemCount: 6,
+          itemCount: boxValues.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (BuildContext context, int index) {
             return HomePageBox(
@@ -71,7 +81,7 @@ class _HomeState extends State<Home> {
 class BoxModel {
   String name;
   String image;
-  Function onTapFunc;
+  String onTapFunc;
 
   BoxModel({
     this.onTapFunc,
@@ -83,7 +93,7 @@ class BoxModel {
 class HomePageBox extends StatelessWidget {
   final String name;
   final String image;
-  final Function onTapFunc;
+  final String onTapFunc;
 
   HomePageBox({
     @required this.name,
@@ -96,7 +106,9 @@ class HomePageBox extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(10, 20, 10, 0),
       child: InkWell(
-        onTap: onTapFunc,
+        onTap: () {
+          Navigator.pushNamed(context, onTapFunc);
+        },
         child: Card(
           elevation: 3,
           shape: RoundedRectangleBorder(

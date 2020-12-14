@@ -7,6 +7,7 @@ import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:live_pharmacy/screens/createOrder.dart';
 import 'package:live_pharmacy/screens/home.dart';
 import 'package:live_pharmacy/screens/initial.dart';
+import 'package:live_pharmacy/screens/latest.dart';
 import 'package:live_pharmacy/screens/login.dart';
 import 'package:live_pharmacy/screens/profile.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
           'login': (context) => LoginScreen(),
           'profile': (context) => Profile(),
           'create': (context) => CreateOrder(),
+          'latest': (context) => LatestOrders(),
         },
       ),
     );
