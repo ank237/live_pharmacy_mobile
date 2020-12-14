@@ -15,26 +15,39 @@ class Profile extends StatelessWidget {
         title: Text('Profile'),
       ),
       body: Container(
-        child: Column(
-          children: [
-            Text(user.name),
-            Container(
-              width: size.width,
-              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-              child: FlatButton(
-                padding: EdgeInsets.all(15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+        padding: EdgeInsets.all(30),
+        child: Card(
+          elevation: 5,
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(user.name, style: kLargeBlueTextStyle),
+                SizedBox(height: 10),
+                Text(user.phone, style: kLargeBlueTextStyle),
+                SizedBox(height: 10),
+                Text(user.role, style: kLargeBlueTextStyle),
+                SizedBox(height: 20),
+                Container(
+                  width: size.width,
+                  margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                  child: FlatButton(
+                    padding: EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    color: kPrimaryColor,
+                    onPressed: () async {
+                      await _auth.signOut();
+                      Navigator.pushNamed(context, 'initial');
+                    },
+                    child: Text('LOGOUT', style: kLargeWhiteTextStyle),
+                  ),
                 ),
-                color: kPrimaryColor,
-                onPressed: () async {
-                  await _auth.signOut();
-                  Navigator.pushNamed(context, 'initial');
-                },
-                child: Text('LOGOUT', style: kLargeWhiteTextStyle),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

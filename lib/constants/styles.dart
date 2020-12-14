@@ -15,6 +15,12 @@ TextStyle kOrderCardTextStyle = TextStyle(
   fontWeight: FontWeight.w700,
 );
 
+TextStyle kBlueTextStyle = TextStyle(
+  fontSize: 14,
+  color: kPrimaryColor,
+  fontWeight: FontWeight.w700,
+);
+
 TextStyle kLargeBlueTextStyle = TextStyle(
   fontSize: 18,
   color: kPrimaryColor,

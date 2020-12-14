@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
-import 'package:live_pharmacy/provider/orderProvider.dart';
-import 'package:provider/provider.dart';
 
 class OngoingOrders extends StatefulWidget {
   @override
@@ -16,7 +14,6 @@ class _OngoingOrdersState extends State<OngoingOrders> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Ongoing deliveries'),

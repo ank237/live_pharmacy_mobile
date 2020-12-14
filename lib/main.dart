@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/provider/notesProvider.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:live_pharmacy/screens/createOrder.dart';
@@ -10,9 +11,11 @@ import 'package:live_pharmacy/screens/home.dart';
 import 'package:live_pharmacy/screens/initial.dart';
 import 'package:live_pharmacy/screens/latest.dart';
 import 'package:live_pharmacy/screens/login.dart';
+import 'package:live_pharmacy/screens/notes.dart';
 import 'package:live_pharmacy/screens/ongoing.dart';
 import 'package:live_pharmacy/screens/orderDetails.dart';
 import 'package:live_pharmacy/screens/past.dart';
+import 'package:live_pharmacy/screens/payments.dart';
 import 'package:live_pharmacy/screens/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +36,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => OrderProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => NotesProvider(),
+        ),
       ],
       child: MaterialApp(
         home: InitialScreen(),
@@ -52,6 +58,8 @@ class MyApp extends StatelessWidget {
           'deliveries': (context) => Deliveries(),
           'orderDetails': (context) => OrderDetails(),
           'past': (context) => PastOrder(),
+          'payments': (context) => Payments(),
+          'notes': (context) => Notes(),
         },
       ),
     );
