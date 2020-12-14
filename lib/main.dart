@@ -2,10 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
+import 'package:live_pharmacy/screens/createOrder.dart';
 import 'package:live_pharmacy/screens/home.dart';
 import 'package:live_pharmacy/screens/initial.dart';
 import 'package:live_pharmacy/screens/login.dart';
+import 'package:live_pharmacy/screens/profile.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -22,6 +25,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => UserProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => OrderProvider(),
+        ),
       ],
       child: MaterialApp(
         home: InitialScreen(),
@@ -31,8 +37,11 @@ class MyApp extends StatelessWidget {
           primaryColor: kPrimaryColor,
         ),
         routes: {
+          'initial': (context) => InitialScreen(),
           'home': (context) => Home(),
           'login': (context) => LoginScreen(),
+          'profile': (context) => Profile(),
+          'create': (context) => CreateOrder(),
         },
       ),
     );
