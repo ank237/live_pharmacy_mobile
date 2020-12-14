@@ -1,27 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
 
-class LatestOrders extends StatefulWidget {
+class OngoingOrders extends StatefulWidget {
   @override
-  _LatestOrdersState createState() => _LatestOrdersState();
+  _OngoingOrdersState createState() => _OngoingOrdersState();
 }
 
-class _LatestOrdersState extends State<LatestOrders> {
+class _OngoingOrdersState extends State<OngoingOrders> {
   FirebaseFirestore _db = FirebaseFirestore.instance;
-
-  @override
-  void initState() {
-    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
-    Future.delayed(Duration.zero, () {
-      orderProvider.fetchAgents();
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +38,7 @@ class _LatestOrdersState extends State<LatestOrders> {
                     final orders = snapshot.data.docs;
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
-                      if (order['delivered_by'] == 'na') {
+                      if (order['delivered_by'] != 'na' && order['is_delivered'] == false) {
                         orderWidget.add(
                           Card(
                             margin: EdgeInsets.fromLTRB(15, 20, 15, 0),
@@ -120,50 +110,15 @@ class _LatestOrdersState extends State<LatestOrders> {
                                       ),
                                       SizedBox(width: 5),
                                       Expanded(
-                                        child: FlatButton(
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return Container(
-                                                    height: size.height * 0.25,
-                                                    child: ListView.builder(
-                                                      itemCount: orderProvider.agentList.length,
-                                                      itemBuilder: (context, index) {
-                                                        var agent = orderProvider.agentList[index];
-                                                        return ListTile(
-                                                          title: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(agent.name),
-                                                              Text(agent.phone),
-                                                            ],
-                                                          ),
-                                                          trailing: FlatButton(
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                            ),
-                                                            color: kPrimaryColor,
-                                                            child: Text('Assign', style: kWhiteButtonTextStyle),
-                                                            onPressed: () {
-                                                              orderProvider.assignAgent(order.id, agent.docId, agent.name);
-                                                              Navigator.pop(context);
-                                                              Fluttertoast.showToast(msg: '${agent.name} assigned for this order');
-                                                            },
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: Text('Assign agent', style: kWhiteButtonTextStyle),
-                                          color: kPrimaryColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.person_pin, color: kPrimaryColor),
+                                            SizedBox(width: 5),
+                                            Text(order['agent_name'], style: kAppbarButtonTextStyle),
+                                          ],
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                         ),
-                                      )
+                                      ),
                                     ],
                                   )
                                 ],

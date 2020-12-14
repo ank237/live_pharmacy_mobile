@@ -31,11 +31,12 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> assignAgent(String orderId, String agentId) async {
+  Future<void> assignAgent(String orderId, String agentId, String agentName) async {
     toggleIsLoading();
     await _db.collection('orders').doc(orderId).update(
       {
         'delivered_by': agentId,
+        'agent_name': agentName,
       },
     );
     await _db.collection('users').doc(agentId).collection('deliveries').add({
