@@ -5,12 +5,33 @@ import 'package:live_pharmacy/models/orderModel.dart';
 
 class OrderProvider extends ChangeNotifier {
   OrderModel newOrder;
+  OrderModel selectedForDelivery;
   FirebaseFirestore _db = FirebaseFirestore.instance;
   bool isSaving = false;
   List<AgentModel> agentList = [];
 
   void toggleIsLoading() {
     isSaving = !isSaving;
+    notifyListeners();
+  }
+
+  Future<void> markOrderDelivered(String payment, String userID) async {
+    toggleIsLoading();
+    await _db.collection('orders').doc(selectedForDelivery.orderDocID).update({
+      'is_delivered': true,
+      'delivered_on': DateTime.now(),
+      'mode_of_payment': payment,
+      'is_paid': true,
+    });
+    var res = await _db.collection('users').doc(userID).collection('deliveries').get();
+    for (var r in res.docs) {
+      if (r['order_id'] == selectedForDelivery.orderDocID) {
+        await _db.collection('users').doc(userID).collection('deliveries').doc(r.id).update({
+          'delivered': true,
+        });
+      }
+    }
+    toggleIsLoading();
     notifyListeners();
   }
 
@@ -42,6 +63,7 @@ class OrderProvider extends ChangeNotifier {
     await _db.collection('users').doc(agentId).collection('deliveries').add({
       'order_id': orderId,
       'date': DateTime.now(),
+      'delivered': false,
     });
     toggleIsLoading();
     notifyListeners();

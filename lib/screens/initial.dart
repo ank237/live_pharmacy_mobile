@@ -24,7 +24,11 @@ class _InitialScreenState extends State<InitialScreen> {
       setState(() {
         _isLoading = false;
       });
-      Navigator.pushNamed(context, 'home');
+      if (userProvider.loggedInUser.role == 'agent') {
+        Navigator.pushNamed(context, 'deliveries');
+      } else {
+        Navigator.pushNamed(context, 'home');
+      }
     }
   }
 

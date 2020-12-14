@@ -14,6 +14,17 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<int> getTotalOrderDelivered() async {
+    int ans = 0;
+    var res = await _db.collection('users').doc(loggedInUser.docID).collection('deliveries').get();
+    for (var d in res.docs) {
+      if (d['delivered'] == true) {
+        ans += 1;
+      }
+    }
+    return ans;
+  }
+
   Future<void> getCurrentUser(String num) async {
     var res = await _db.collection('users').get();
     for (var d in res.docs) {
@@ -46,12 +57,13 @@ class UserProvider extends ChangeNotifier {
     print(result);
     loggedInUser = newUser;
     if (result == false) {
-      await _db.collection('users').add({
+      var res = await _db.collection('users').add({
         'name': newUser.name,
         'phone': newUser.phone,
         'role': newUser.role,
         'isVerified': newUser.isVerified,
       });
+      loggedInUser.docID = res.id;
     }
     toggleIsLoading();
     notifyListeners();

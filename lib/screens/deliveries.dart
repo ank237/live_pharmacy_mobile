@@ -2,24 +2,56 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/models/orderModel.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
+import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:provider/provider.dart';
 
-class OngoingOrders extends StatefulWidget {
+class Deliveries extends StatefulWidget {
   @override
-  _OngoingOrdersState createState() => _OngoingOrdersState();
+  _DeliveriesState createState() => _DeliveriesState();
 }
 
-class _OngoingOrdersState extends State<OngoingOrders> {
+class _DeliveriesState extends State<Deliveries> {
   FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  int count = 0;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      int ans = await Provider.of<UserProvider>(context, listen: false).getTotalOrderDelivered();
+      setState(() {
+        count = ans;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userProvider = Provider.of<UserProvider>(context);
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ongoing deliveries'),
+        leading: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, 'profile');
+            },
+            child: Icon(FontAwesomeIcons.solidUserCircle)),
+        title: Text('Delivery'),
+        actions: [
+          Center(
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, 'create');
+              },
+              child: Text('$count Completed', style: kLargeWhiteTextStyle),
+            ),
+          ),
+          SizedBox(width: 15),
+        ],
       ),
       body: Container(
         width: size.width,
@@ -28,7 +60,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
             Expanded(
               child: SingleChildScrollView(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _db.collection('orders').orderBy('order_created_date', descending: true).snapshots(),
+                  stream: _db.collection('orders').orderBy('order_created_date', descending: false).snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator(
@@ -38,7 +70,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                     final orders = snapshot.data.docs;
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
-                      if (order['delivered_by'] != 'na' && order['is_delivered'] == false) {
+                      if (order['delivered_by'] == userProvider.loggedInUser.docID && order['is_delivered'] == false) {
                         orderWidget.add(
                           Card(
                             margin: EdgeInsets.fromLTRB(15, 20, 15, 0),
@@ -77,22 +109,14 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                                     children: [
                                       Icon(FontAwesomeIcons.pills, color: kPrimaryColor),
                                       SizedBox(width: 10),
-                                      Text(order['address'], style: kOrderCardTextStyle),
+                                      Text(order['order_details'], style: kOrderCardTextStyle),
                                     ],
                                   ),
                                   SizedBox(height: 5),
                                   Row(
                                     children: [
-                                      Expanded(
-                                        child: FlatButton(
-                                          onPressed: () {},
-                                          child: Text('Cancel Order', style: kWhiteButtonTextStyle),
-                                          color: kCancelButtonColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                      ),
+                                      SizedBox(width: 5),
+                                      Expanded(child: Container()),
                                       SizedBox(width: 5),
                                       Expanded(
                                         child: FlatButton(
@@ -110,13 +134,27 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                                       ),
                                       SizedBox(width: 5),
                                       Expanded(
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.person_pin, color: kPrimaryColor),
-                                            SizedBox(width: 5),
-                                            Text(order['agent_name'], style: kAppbarButtonTextStyle),
-                                          ],
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                        child: FlatButton(
+                                          onPressed: () {
+                                            orderProvider.selectedForDelivery = OrderModel(
+                                              name: order['name'],
+                                              address: order['address'],
+                                              phoneNumber: order['phone'],
+                                              orderDetails: order['order_details'],
+                                              amount: order['amount'],
+                                              orderDocID: order.id,
+                                            );
+                                            Navigator.pushNamed(context, 'orderDetails');
+                                          },
+                                          child: Text(
+                                            'Start',
+                                            style: kWhiteButtonTextStyle,
+                                            maxLines: 1,
+                                          ),
+                                          color: kPrimaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -134,7 +172,7 @@ class _OngoingOrdersState extends State<OngoingOrders> {
                   },
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

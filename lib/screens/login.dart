@@ -74,7 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       await userProvider.registerNewUser();
     }
-    Navigator.pushNamed(context, "home");
+    if (userProvider.loggedInUser.role == 'agent') {
+      Navigator.pushNamed(context, "deliveries");
+    } else {
+      Navigator.pushNamed(context, "home");
+    }
   }
 
   @override

@@ -5,11 +5,14 @@ import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:live_pharmacy/screens/createOrder.dart';
+import 'package:live_pharmacy/screens/deliveries.dart';
 import 'package:live_pharmacy/screens/home.dart';
 import 'package:live_pharmacy/screens/initial.dart';
 import 'package:live_pharmacy/screens/latest.dart';
 import 'package:live_pharmacy/screens/login.dart';
 import 'package:live_pharmacy/screens/ongoing.dart';
+import 'package:live_pharmacy/screens/orderDetails.dart';
+import 'package:live_pharmacy/screens/past.dart';
 import 'package:live_pharmacy/screens/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +49,9 @@ class MyApp extends StatelessWidget {
           'create': (context) => CreateOrder(),
           'latest': (context) => LatestOrders(),
           'ongoing': (context) => OngoingOrders(),
+          'deliveries': (context) => Deliveries(),
+          'orderDetails': (context) => OrderDetails(),
+          'past': (context) => PastOrder(),
         },
       ),
     );
