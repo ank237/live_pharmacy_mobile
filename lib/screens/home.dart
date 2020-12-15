@@ -13,7 +13,7 @@ class _HomeState extends State<Home> {
   List<BoxModel> boxValues = [
     BoxModel(onTapFunc: 'latest', image: 'latest', name: 'Latest'),
     BoxModel(onTapFunc: 'ongoing', image: 'ongoing', name: 'Ongoing Deliveries'),
-    BoxModel(onTapFunc: 'schedule', image: 'schedule', name: 'Scheduled deliveries'),
+    BoxModel(onTapFunc: 'scheduled', image: 'schedule', name: 'Scheduled deliveries'),
     BoxModel(onTapFunc: 'past', image: 'past', name: 'Past Deliveries'),
     BoxModel(onTapFunc: 'payments', image: 'payments', name: 'Payments'),
     BoxModel(onTapFunc: 'notes', image: 'notes', name: 'Notes'),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/notesProvider.dart';
@@ -12,6 +13,26 @@ class Notes extends StatefulWidget {
 
 class _NotesState extends State<Notes> {
   TextEditingController _notes = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context, String noteID) async {
+    final notesProvider = Provider.of<NotesProvider>(context, listen: false);
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        Duration(days: 30),
+      ),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+      await notesProvider.setReminder(noteID, selectedDate);
+      Fluttertoast.showToast(msg: 'Reminder Saved');
+    }
+  }
 
   @override
   void initState() {
@@ -106,7 +127,9 @@ class _NotesState extends State<Notes> {
                   Expanded(
                     flex: 3,
                     child: FlatButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, 'upcomingReminders');
+                      },
                       child: Text(
                         'Upcoming reminders',
                         style: kWhiteButtonTextStyle,
@@ -145,7 +168,9 @@ class _NotesState extends State<Notes> {
                               Container(
                                 width: 125,
                                 child: FlatButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _selectDate(context, note.docId);
+                                  },
                                   child: Text(
                                     'Set a reminder',
                                     style: kWhiteButtonTextStyle,

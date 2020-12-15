@@ -120,7 +120,17 @@ class _DeliveriesState extends State<Deliveries> {
                                       SizedBox(width: 5),
                                       Expanded(
                                         child: FlatButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            orderProvider.selectedOrder = OrderModel(
+                                              name: order['name'],
+                                              address: order['address'],
+                                              phoneNumber: order['phone'],
+                                              orderDetails: order['order_details'],
+                                              amount: order['amount'],
+                                              orderDocID: order.id,
+                                            );
+                                            Navigator.pushNamed(context, 'details');
+                                          },
                                           child: Text(
                                             'Order details',
                                             style: kWhiteButtonTextStyle,

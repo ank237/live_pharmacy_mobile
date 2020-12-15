@@ -7,6 +7,7 @@ import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:live_pharmacy/screens/createOrder.dart';
 import 'package:live_pharmacy/screens/deliveries.dart';
+import 'package:live_pharmacy/screens/details.dart';
 import 'package:live_pharmacy/screens/home.dart';
 import 'package:live_pharmacy/screens/initial.dart';
 import 'package:live_pharmacy/screens/latest.dart';
@@ -17,6 +18,8 @@ import 'package:live_pharmacy/screens/orderDetails.dart';
 import 'package:live_pharmacy/screens/past.dart';
 import 'package:live_pharmacy/screens/payments.dart';
 import 'package:live_pharmacy/screens/profile.dart';
+import 'package:live_pharmacy/screens/scheduled.dart';
+import 'package:live_pharmacy/screens/upcomingReminders.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -60,6 +63,9 @@ class MyApp extends StatelessWidget {
           'past': (context) => PastOrder(),
           'payments': (context) => Payments(),
           'notes': (context) => Notes(),
+          'upcomingReminders': (context) => UpcomingReminders(),
+          'scheduled': (context) => ScheduledDeliveries(),
+          'details': (context) => Details(),
         },
       ),
     );

@@ -4,6 +4,7 @@ import 'package:live_pharmacy/models/notesModel.dart';
 
 class NotesProvider extends ChangeNotifier {
   List<NotesModel> notesList = [];
+  List<NotesModel> remindersList = [];
   bool isLoading = false;
   FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -48,11 +49,40 @@ class NotesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteReminder(String noteID, DateTime date) async {
+    toggleIsLoading();
+    await _db.collection('notes').doc(noteID).update({
+      'reminder': date.add(Duration(days: 365)),
+    });
+    toggleIsLoading();
+    notifyListeners();
+  }
+
   Future<void> setReminder(String noteID, DateTime reminder) async {
     toggleIsLoading();
     await _db.collection('notes').doc(noteID).update({
       'reminder': reminder,
     });
+    toggleIsLoading();
+    notifyListeners();
+  }
+
+  Future<void> fetchReminders() async {
+    toggleIsLoading();
+    remindersList.clear();
+    var res = await _db.collection('notes').get();
+    for (var d in res.docs) {
+      DateTime date = d['date'].toDate();
+      DateTime reminder = d['reminder'].toDate();
+      if (reminder.isBefore(date.add(Duration(days: 30)))) {
+        remindersList.add(NotesModel(
+          note: d['note'],
+          docId: d.id,
+          date: d['date'].toDate(),
+          reminder: d['reminder'].toDate(),
+        ));
+      }
+    }
     toggleIsLoading();
     notifyListeners();
   }

@@ -6,6 +6,7 @@ import 'package:live_pharmacy/models/orderModel.dart';
 class OrderProvider extends ChangeNotifier {
   OrderModel newOrder;
   OrderModel selectedForDelivery;
+  OrderModel selectedOrder;
   FirebaseFirestore _db = FirebaseFirestore.instance;
   bool isSaving = false;
   List<AgentModel> agentList = [];
@@ -58,6 +59,7 @@ class OrderProvider extends ChangeNotifier {
       {
         'delivered_by': agentId,
         'agent_name': agentName,
+        'is_delivered': false,
       },
     );
     await _db.collection('users').doc(agentId).collection('deliveries').add({
