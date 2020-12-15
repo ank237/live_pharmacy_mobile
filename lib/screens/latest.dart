@@ -89,7 +89,7 @@ class _LatestOrdersState extends State<LatestOrders> {
                     final orders = snapshot.data.docs;
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
-                      if (order['delivered_by'] == 'na') {
+                      if (order['delivered_by'] == 'na' && order['is_delivered'] == false) {
                         orderWidget.add(
                           Card(
                             margin: EdgeInsets.fromLTRB(15, 20, 15, 0),
