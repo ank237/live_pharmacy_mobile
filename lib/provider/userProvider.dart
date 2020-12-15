@@ -14,6 +14,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> verifyUser(String docID) async {
+    toggleIsLoading();
+    await _db.collection('users').doc(docID).update({
+      'isVerified': true,
+    });
+    toggleIsLoading();
+    notifyListeners();
+  }
+
   Future<int> getTotalOrderDelivered() async {
     int ans = 0;
     var res = await _db.collection('users').doc(loggedInUser.docID).collection('deliveries').get();

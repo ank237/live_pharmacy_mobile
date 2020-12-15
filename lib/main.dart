@@ -20,6 +20,8 @@ import 'package:live_pharmacy/screens/payments.dart';
 import 'package:live_pharmacy/screens/profile.dart';
 import 'package:live_pharmacy/screens/scheduled.dart';
 import 'package:live_pharmacy/screens/upcomingReminders.dart';
+import 'package:live_pharmacy/screens/verification.dart';
+import 'package:live_pharmacy/screens/verifyUsers.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -66,6 +68,8 @@ class MyApp extends StatelessWidget {
           'upcomingReminders': (context) => UpcomingReminders(),
           'scheduled': (context) => ScheduledDeliveries(),
           'details': (context) => Details(),
+          'verify': (context) => Verification(),
+          'verifyUsers': (context) => VerifyUsers(),
         },
       ),
     );

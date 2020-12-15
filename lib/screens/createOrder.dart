@@ -21,7 +21,26 @@ class _CreateOrderState extends State<CreateOrder> {
   TextEditingController _phoneNumber = TextEditingController();
   TextEditingController _orderDetails = TextEditingController();
   TextEditingController _billingAmount = TextEditingController();
-  TextEditingController _deliveryDate = TextEditingController();
+  TextEditingController _date = TextEditingController();
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        Duration(days: 30),
+      ),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+        _date.text = selectedDate.day.toString() + '/' + selectedDate.month.toString() + '/' + selectedDate.year.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,12 +121,19 @@ class _CreateOrderState extends State<CreateOrder> {
                   SizedBox(height: 20),
                   Text('Delivery Date', style: kLargeBlueTextStyle),
                   SizedBox(height: 10),
-                  TextFormField(
-                    controller: _deliveryDate,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
-                      isDense: true,
-                      suffixIcon: Icon(FontAwesomeIcons.solidCalendarAlt, color: kPrimaryColor, size: 25),
+                  InkWell(
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                    child: TextFormField(
+                      controller: _date,
+                      enabled: false,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
+                        isDense: true,
+                        hintText: 'Tap to pick date',
+                        suffixIcon: Icon(FontAwesomeIcons.solidCalendarAlt, color: kPrimaryColor, size: 25),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -145,7 +171,7 @@ class _CreateOrderState extends State<CreateOrder> {
                             phoneNumber: _phoneNumber.value.text,
                             orderDetails: _orderDetails.value.text,
                             amount: _billingAmount.value.text,
-                            date: _deliveryDate.value.text,
+                            date: selectedDate,
                             isRepeating: repeating,
                             isDelivered: false,
                             deliveredBy: 'na',

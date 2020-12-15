@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
@@ -62,16 +63,42 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: Container(
-        child: GridView.builder(
-          itemCount: boxValues.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-          itemBuilder: (BuildContext context, int index) {
-            return HomePageBox(
-              name: boxValues[index].name,
-              image: boxValues[index].image,
-              onTapFunc: boxValues[index].onTapFunc,
-            );
-          },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Flexible(
+              child: GridView.builder(
+                itemCount: boxValues.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                itemBuilder: (BuildContext context, int index) {
+                  return HomePageBox(
+                    name: boxValues[index].name,
+                    image: boxValues[index].image,
+                    onTapFunc: boxValues[index].onTapFunc,
+                  );
+                },
+              ),
+            ),
+            userProvider.loggedInUser.role == 'admin'
+                ? Container(
+                    margin: EdgeInsets.only(bottom: 10),
+                    width: size.width,
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: size.width * 0.7,
+                      child: FlatButton(
+                        color: kPrimaryColor,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'verifyUsers');
+                        },
+                        child: Text('Verify Users', style: kLargeWhiteTextStyle),
+                      ),
+                    ),
+                  )
+                : Container(),
+          ],
         ),
       ),
     );

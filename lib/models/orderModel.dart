@@ -4,7 +4,7 @@ class OrderModel {
   String phoneNumber;
   String orderDetails;
   String amount;
-  String date;
+  DateTime date;
   bool isRepeating;
   bool isDelivered;
   String deliveredBy;

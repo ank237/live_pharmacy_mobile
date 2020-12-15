@@ -24,10 +24,14 @@ class _InitialScreenState extends State<InitialScreen> {
       setState(() {
         _isLoading = false;
       });
-      if (userProvider.loggedInUser.role == 'agent') {
-        Navigator.pushNamed(context, 'deliveries');
+      if (userProvider.loggedInUser.isVerified) {
+        if (userProvider.loggedInUser.role == 'agent') {
+          Navigator.pushNamed(context, 'deliveries');
+        } else {
+          Navigator.pushNamed(context, 'home');
+        }
       } else {
-        Navigator.pushNamed(context, 'home');
+        Navigator.pushNamed(context, 'verify');
       }
     }
   }
