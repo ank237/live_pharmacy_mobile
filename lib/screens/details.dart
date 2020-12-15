@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Details extends StatefulWidget {
   @override
@@ -61,7 +62,14 @@ class _DetailsState extends State<Details> {
                     Container(
                       width: 100,
                       child: FlatButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          String url = 'tel:${orderProvider.selectedOrder.phoneNumber}';
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
                         child: Text(
                           'Call',
                           style: kWhiteButtonTextStyle,

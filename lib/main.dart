@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         home: InitialScreen(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          textTheme: GoogleFonts.poppinsTextTheme(),
+          textTheme: GoogleFonts.latoTextTheme(),
           primaryColor: kPrimaryColor,
         ),
         routes: {

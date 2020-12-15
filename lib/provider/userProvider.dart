@@ -23,6 +23,13 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> rejectUser(String docID) async {
+    toggleIsLoading();
+    await _db.collection('users').doc(docID).delete();
+    toggleIsLoading();
+    notifyListeners();
+  }
+
   Future<int> getTotalOrderDelivered() async {
     int ans = 0;
     var res = await _db.collection('users').doc(loggedInUser.docID).collection('deliveries').get();
@@ -54,6 +61,7 @@ class UserProvider extends ChangeNotifier {
     var res = await _db.collection('users').get();
     for (var d in res.docs) {
       if (newUser.phone == d['phone']) {
+        loggedInUser.isVerified = d['isVerified'];
         return true;
       }
     }
@@ -62,9 +70,9 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> registerNewUser() async {
     toggleIsLoading();
+    loggedInUser = newUser;
     bool result = await checkUser();
     print(result);
-    loggedInUser = newUser;
     if (result == false) {
       var res = await _db.collection('users').add({
         'name': newUser.name,

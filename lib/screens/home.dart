@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
@@ -19,6 +20,44 @@ class _HomeState extends State<Home> {
     BoxModel(onTapFunc: 'notes', image: 'notes', name: 'Notes'),
   ];
 
+  Future<bool> _onBackPressed() {
+    return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                'Are you sure?',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              content: Text(
+                'Do you want to exit the app',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('NO'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                FlatButton(
+                  child: Text('YES'),
+                  onPressed: () {
+                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  },
+                )
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
+
   @override
   void initState() {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -32,73 +71,83 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final userProvider = Provider.of<UserProvider>(context);
-    return Scaffold(
-      appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, 'profile');
-            },
-            child: Icon(FontAwesomeIcons.solidUserCircle)),
-        title: Text('Live Pharmacy'),
-        actions: [
-          Center(
-            child: InkWell(
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: InkWell(
               onTap: () {
-                Navigator.pushNamed(context, 'create');
+                Navigator.pushNamed(context, 'profile');
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(7),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 7, horizontal: 20),
-                child: Text(
-                  '+   NEW',
-                  style: kAppbarButtonTextStyle,
-                ),
-              ),
+              child: Icon(FontAwesomeIcons.solidUserCircle)),
+          title: Text('Live Pharmacy'),
+          actions: [
+            InkWell(
+              child: Icon(FontAwesomeIcons.solidBell),
+              onTap: () {
+                Navigator.pushNamed(context, 'upcomingReminders');
+              },
             ),
-          ),
-          SizedBox(width: 15),
-        ],
-      ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              child: GridView.builder(
-                itemCount: boxValues.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                itemBuilder: (BuildContext context, int index) {
-                  return HomePageBox(
-                    name: boxValues[index].name,
-                    image: boxValues[index].image,
-                    onTapFunc: boxValues[index].onTapFunc,
-                  );
+            SizedBox(width: 10),
+            Center(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, 'create');
                 },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(7),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 7, horizontal: 20),
+                  child: Text(
+                    '+   NEW',
+                    style: kAppbarButtonTextStyle,
+                  ),
+                ),
               ),
             ),
-            userProvider.loggedInUser.role == 'admin'
-                ? Container(
-                    margin: EdgeInsets.only(bottom: 10),
-                    width: size.width,
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: size.width * 0.7,
-                      child: FlatButton(
-                        color: kPrimaryColor,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                        onPressed: () {
-                          Navigator.pushNamed(context, 'verifyUsers');
-                        },
-                        child: Text('Verify Users', style: kLargeWhiteTextStyle),
-                      ),
-                    ),
-                  )
-                : Container(),
+            SizedBox(width: 15),
           ],
+        ),
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                child: GridView.builder(
+                  itemCount: boxValues.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                  itemBuilder: (BuildContext context, int index) {
+                    return HomePageBox(
+                      name: boxValues[index].name,
+                      image: boxValues[index].image,
+                      onTapFunc: boxValues[index].onTapFunc,
+                    );
+                  },
+                ),
+              ),
+              userProvider.loggedInUser.role == 'admin'
+                  ? Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      width: size.width,
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: size.width * 0.7,
+                        child: FlatButton(
+                          color: kPrimaryColor,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                          onPressed: () {
+                            Navigator.pushNamed(context, 'verifyUsers');
+                          },
+                          child: Text('Verify Users', style: kLargeWhiteTextStyle),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );

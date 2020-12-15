@@ -43,12 +43,7 @@ class _DeliveriesState extends State<Deliveries> {
         title: Text('Delivery'),
         actions: [
           Center(
-            child: InkWell(
-              onTap: () {
-                Navigator.pushNamed(context, 'create');
-              },
-              child: Text('$count Completed', style: kLargeWhiteTextStyle),
-            ),
+            child: Text('$count Completed', style: kLargeWhiteTextStyle),
           ),
           SizedBox(width: 15),
         ],

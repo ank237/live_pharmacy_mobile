@@ -71,6 +71,10 @@ class _CreateOrderState extends State<CreateOrder> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: _name,
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
@@ -81,6 +85,10 @@ class _CreateOrderState extends State<CreateOrder> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: _address,
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
@@ -91,6 +99,11 @@ class _CreateOrderState extends State<CreateOrder> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: _phoneNumber,
+                    keyboardType: TextInputType.phone,
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
@@ -103,6 +116,10 @@ class _CreateOrderState extends State<CreateOrder> {
                     controller: _orderDetails,
                     minLines: 4,
                     maxLines: 5,
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
@@ -113,6 +130,11 @@ class _CreateOrderState extends State<CreateOrder> {
                   SizedBox(height: 10),
                   TextFormField(
                     controller: _billingAmount,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
@@ -128,6 +150,10 @@ class _CreateOrderState extends State<CreateOrder> {
                     child: TextFormField(
                       controller: _date,
                       enabled: false,
+                      style: TextStyle(
+                        color: kPrimaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                         isDense: true,
@@ -140,7 +166,7 @@ class _CreateOrderState extends State<CreateOrder> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Monthly repeating customer ?', style: kAppbarButtonTextStyle),
+                      Text('Monthly repeating customer ?', style: kLargeBlueTextStyle),
                       CupertinoSwitch(
                         activeColor: kPrimaryColor,
                         value: repeating,

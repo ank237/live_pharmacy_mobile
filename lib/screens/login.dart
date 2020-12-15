@@ -158,6 +158,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                             onPressed: () {
+                              Fluttertoast.showToast(msg: 'OTP sent');
+                              FocusScope.of(context).unfocus();
                               if (_form.currentState.validate()) {
                                 setState(() {
                                   phoneNumber = '+91' + _number.value.text.trim();
@@ -175,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 10),
                       TextFormField(
                         controller: _otp,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                           isDense: true,

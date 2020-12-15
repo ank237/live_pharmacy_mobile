@@ -6,6 +6,7 @@ import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OrderDetails extends StatefulWidget {
   @override
@@ -80,7 +81,14 @@ class _OrderDetailsState extends State<OrderDetails> {
                       Container(
                         width: 100,
                         child: FlatButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            String url = 'tel:${orderProvider.selectedForDelivery.phoneNumber}';
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
                           child: Text(
                             'Call',
                             style: kWhiteButtonTextStyle,

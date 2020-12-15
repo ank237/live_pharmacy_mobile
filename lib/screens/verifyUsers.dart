@@ -77,7 +77,23 @@ class _VerifyUsersState extends State<VerifyUsers> {
                                     SizedBox(height: 5),
                                     Row(
                                       children: [
-                                        SizedBox(width: 75),
+                                        Expanded(
+                                          child: FlatButton(
+                                            onPressed: () {
+                                              userProvider.rejectUser(user.id);
+                                            },
+                                            child: Text(
+                                              'Reject',
+                                              style: kWhiteButtonTextStyle,
+                                              maxLines: 1,
+                                            ),
+                                            color: kCancelButtonColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 30),
                                         Expanded(
                                           child: FlatButton(
                                             onPressed: () {
@@ -94,7 +110,6 @@ class _VerifyUsersState extends State<VerifyUsers> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 75),
                                       ],
                                     )
                                   ],
