@@ -21,7 +21,9 @@ class OrderProvider extends ChangeNotifier {
     await _db.collection('orders').doc(selectedForDelivery.orderDocID).update({
       'is_delivered': true,
       'delivered_on': DateTime.now(),
+      'delivery_date': DateTime.now(),
       'mode_of_payment': payment,
+      'delivered_by': 'na',
       'is_paid': true,
     });
     var res = await _db.collection('users').doc(userID).collection('deliveries').get();

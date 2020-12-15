@@ -90,7 +90,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                     final orders = snapshot.data.docs;
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
-                      if (order['is_repeating'] == true) {
+                      if (order['is_repeating'] == true && order['delivered_by'] == 'na') {
                         DateTime date = order['delivery_date'].toDate();
                         date = date.add(Duration(days: 30));
                         orderWidget.add(
