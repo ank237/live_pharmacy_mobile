@@ -80,7 +80,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
             Flexible(
               child: SingleChildScrollView(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _db.collection('orders').orderBy('order_created_date', descending: false).snapshots(),
+                  stream: _db.collection('orders').orderBy('delivery_date', descending: false).snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator(
@@ -91,8 +91,8 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
                       if (order['is_repeating'] == true) {
-                        DateTime date = order['order_created_date'].toDate();
-                        date.add(Duration(days: 30));
+                        DateTime date = order['delivery_date'].toDate();
+                        date = date.add(Duration(days: 30));
                         orderWidget.add(
                           Card(
                             margin: EdgeInsets.fromLTRB(15, 20, 15, 0),
@@ -102,6 +102,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                               width: size.width * 0.9,
                               padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('Next Delivery - ' + date.day.toString() + '/' + date.month.toString() + '/' + date.year.toString(), style: kBlueTextStyle),
                                   SizedBox(height: 5),
