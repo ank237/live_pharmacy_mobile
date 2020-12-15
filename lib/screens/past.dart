@@ -91,6 +91,12 @@ class _PastOrderState extends State<PastOrder> {
                                       Expanded(
                                         child: FlatButton(
                                           onPressed: () {
+                                            String imageUrl = 'image';
+                                            try {
+                                              imageUrl = order['screenshot'];
+                                            } catch (e) {
+                                              print(e);
+                                            }
                                             orderProvider.selectedOrder = OrderModel(
                                               name: order['name'],
                                               address: order['address'],
@@ -98,7 +104,7 @@ class _PastOrderState extends State<PastOrder> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
-                                              screenshot: order['screenshot'],
+                                              screenshot: imageUrl,
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },

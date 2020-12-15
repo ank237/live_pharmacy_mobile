@@ -97,6 +97,12 @@ class _PaymentsState extends State<Payments> {
                                       Container(
                                         child: FlatButton(
                                           onPressed: () {
+                                            String imageUrl = 'image';
+                                            try {
+                                              imageUrl = order['screenshot'];
+                                            } catch (e) {
+                                              print(e);
+                                            }
                                             orderProvider.selectedOrder = OrderModel(
                                               name: order['name'],
                                               address: order['address'],
@@ -104,7 +110,7 @@ class _PaymentsState extends State<Payments> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
-                                              screenshot: order['screenshot'],
+                                              screenshot: imageUrl,
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },
@@ -157,6 +163,12 @@ class _PaymentsState extends State<Payments> {
                                       Container(
                                         child: FlatButton(
                                           onPressed: () {
+                                            String imageUrl = 'image';
+                                            try {
+                                              imageUrl = order['screenshot'];
+                                            } catch (e) {
+                                              print(e);
+                                            }
                                             orderProvider.selectedOrder = OrderModel(
                                               name: order['name'],
                                               address: order['address'],
@@ -164,6 +176,7 @@ class _PaymentsState extends State<Payments> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
+                                              screenshot: imageUrl,
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },

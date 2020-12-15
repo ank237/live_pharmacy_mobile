@@ -72,136 +72,142 @@ class _OrderDetailsState extends State<OrderDetails> {
         child: Container(
           width: size.width,
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Card(
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.person, color: kPrimaryColor),
-                      SizedBox(width: 10),
-                      Text(orderProvider.selectedForDelivery.name, style: kOrderCardTextStyle),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on, color: kPrimaryColor),
-                      SizedBox(width: 10),
-                      Text(orderProvider.selectedForDelivery.address, style: kOrderCardTextStyle),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            children: [
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.phone, color: kPrimaryColor),
+                          Icon(Icons.person, color: kPrimaryColor),
                           SizedBox(width: 10),
-                          Text(orderProvider.selectedForDelivery.phoneNumber, style: kOrderCardTextStyle),
+                          Text(orderProvider.selectedForDelivery.name, style: kOrderCardTextStyle),
                         ],
                       ),
-                      Container(
-                        width: 100,
-                        child: FlatButton(
-                          onPressed: () async {
-                            String url = 'tel:${orderProvider.selectedForDelivery.phoneNumber}';
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                          child: Text(
-                            'Call',
-                            style: kWhiteButtonTextStyle,
-                            maxLines: 1,
-                          ),
-                          color: kPrimaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(FontAwesomeIcons.pills, color: kPrimaryColor),
-                      SizedBox(width: 10),
-                      Text(orderProvider.selectedForDelivery.orderDetails, style: kOrderCardTextStyle),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Text('PAID VIA : ', style: kOrderCardTextStyle),
-                  Container(
-                    child: Column(
-                      children: options.keys.map((String key) {
-                        return Container(
-                          child: Row(
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on, color: kPrimaryColor),
+                          SizedBox(width: 10),
+                          Text(orderProvider.selectedForDelivery.address, style: kOrderCardTextStyle),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
                             children: [
-                              SizedBox(width: 20),
-                              Checkbox(
-                                activeColor: kPrimaryColor,
-                                value: options[key],
-                                onChanged: (value) {
-                                  options.forEach((key, value) {
-                                    options[key] = false;
-                                  });
-                                  setState(() {
-                                    options[key] = value;
-                                    paymentMethod = key;
-                                  });
-                                },
-                              ),
+                              Icon(Icons.phone, color: kPrimaryColor),
                               SizedBox(width: 10),
-                              Image(
-                                image: AssetImage('assets/$key.png'),
-                              ),
+                              Text(orderProvider.selectedForDelivery.phoneNumber, style: kOrderCardTextStyle),
                             ],
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text('Rs ${orderProvider.selectedForDelivery.amount}', style: kLargeBlueTextStyle),
+                          Container(
+                            width: 100,
+                            child: FlatButton(
+                              onPressed: () async {
+                                String url = 'tel:${orderProvider.selectedForDelivery.phoneNumber}';
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                              child: Text(
+                                'Call',
+                                style: kWhiteButtonTextStyle,
+                                maxLines: 1,
+                              ),
+                              color: kPrimaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Icon(FontAwesomeIcons.pills, color: kPrimaryColor),
+                          SizedBox(width: 10),
+                          Text(orderProvider.selectedForDelivery.orderDetails, style: kOrderCardTextStyle),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Text('PAID VIA : ', style: kOrderCardTextStyle),
                       Container(
-                        width: 100,
-                        child: FlatButton(
-                          onPressed: () async {
-                            await orderProvider.markOrderDelivered(paymentMethod, userProvider.loggedInUser.docID, imageUrl);
-                            Fluttertoast.showToast(msg: 'Order marked delivered');
-                            Navigator.pushNamed(context, 'deliveries');
-                          },
-                          child: Text(
-                            'Done',
-                            style: kWhiteButtonTextStyle,
-                            maxLines: 1,
-                          ),
-                          color: kPrimaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                        child: Column(
+                          children: options.keys.map((String key) {
+                            return Container(
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 20),
+                                  Checkbox(
+                                    activeColor: kPrimaryColor,
+                                    value: options[key],
+                                    onChanged: (value) {
+                                      options.forEach((key, value) {
+                                        options[key] = false;
+                                      });
+                                      setState(() {
+                                        options[key] = value;
+                                        paymentMethod = key;
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  Image(
+                                    image: AssetImage('assets/$key.png'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      )
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text('Rs ${orderProvider.selectedForDelivery.amount}', style: kLargeBlueTextStyle),
+                          Container(
+                            width: 100,
+                            child: FlatButton(
+                              onPressed: () async {
+                                await orderProvider.markOrderDelivered(paymentMethod, userProvider.loggedInUser.docID, imageUrl);
+                                Fluttertoast.showToast(msg: 'Order marked delivered');
+                                Navigator.pushNamed(context, 'deliveries');
+                              },
+                              child: Text(
+                                'Done',
+                                style: kWhiteButtonTextStyle,
+                                maxLines: 1,
+                              ),
+                              color: kPrimaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+              SizedBox(height: 20),
+              imageUrl.contains('https') ? Text('Image Uploaded', style: kLargeBlueTextStyle) : Container(),
+            ],
           ),
         ),
       ),

@@ -21,9 +21,6 @@ class _InitialScreenState extends State<InitialScreen> {
       });
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       await userProvider.getCurrentUser(_auth.currentUser.phoneNumber);
-      setState(() {
-        _isLoading = false;
-      });
       if (userProvider.loggedInUser.isVerified) {
         if (userProvider.loggedInUser.role == 'agent') {
           Navigator.pushNamed(context, 'deliveries');
@@ -34,6 +31,9 @@ class _InitialScreenState extends State<InitialScreen> {
         Navigator.pushNamed(context, 'verify');
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -53,67 +53,69 @@ class _InitialScreenState extends State<InitialScreen> {
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isLoading,
-        child: Container(
-          height: size.height,
-          width: size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Login as', style: kLargeBlueTextStyle),
-              SizedBox(height: 30),
-              Container(
+        child: _isLoading
+            ? Container()
+            : Container(
+                height: size.height,
                 width: size.width,
-                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                child: FlatButton(
-                  padding: EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  color: kPrimaryColor,
-                  onPressed: () {
-                    Provider.of<UserProvider>(context, listen: false).selectedRole = 'admin';
-                    Navigator.pushNamed(context, 'login');
-                  },
-                  child: Text('ADMIN', style: kLargeWhiteTextStyle),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Login as', style: kLargeBlueTextStyle),
+                    SizedBox(height: 30),
+                    Container(
+                      width: size.width,
+                      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                      child: FlatButton(
+                        padding: EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: kPrimaryColor,
+                        onPressed: () {
+                          Provider.of<UserProvider>(context, listen: false).selectedRole = 'admin';
+                          Navigator.pushNamed(context, 'login');
+                        },
+                        child: Text('ADMIN', style: kLargeWhiteTextStyle),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      width: size.width,
+                      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                      child: FlatButton(
+                        padding: EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: kPrimaryColor,
+                        onPressed: () {
+                          Provider.of<UserProvider>(context, listen: false).selectedRole = 'manager';
+                          Navigator.pushNamed(context, 'login');
+                        },
+                        child: Text('MANAGER', style: kLargeWhiteTextStyle),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      width: size.width,
+                      margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+                      child: FlatButton(
+                        padding: EdgeInsets.all(15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        color: kPrimaryColor,
+                        onPressed: () {
+                          Provider.of<UserProvider>(context, listen: false).selectedRole = 'agent';
+                          Navigator.pushNamed(context, 'login');
+                        },
+                        child: Text('DELIVERY AGENT', style: kLargeWhiteTextStyle),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 15),
-              Container(
-                width: size.width,
-                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                child: FlatButton(
-                  padding: EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  color: kPrimaryColor,
-                  onPressed: () {
-                    Provider.of<UserProvider>(context, listen: false).selectedRole = 'manager';
-                    Navigator.pushNamed(context, 'login');
-                  },
-                  child: Text('MANAGER', style: kLargeWhiteTextStyle),
-                ),
-              ),
-              SizedBox(height: 15),
-              Container(
-                width: size.width,
-                margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                child: FlatButton(
-                  padding: EdgeInsets.all(15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  color: kPrimaryColor,
-                  onPressed: () {
-                    Provider.of<UserProvider>(context, listen: false).selectedRole = 'agent';
-                    Navigator.pushNamed(context, 'login');
-                  },
-                  child: Text('DELIVERY AGENT', style: kLargeWhiteTextStyle),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
