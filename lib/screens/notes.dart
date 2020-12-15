@@ -88,166 +88,178 @@ class _NotesState extends State<Notes> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final notesProvider = Provider.of<NotesProvider>(context);
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('Notes'),
-      ),
-      body: ModalProgressHUD(
-        inAsyncCall: notesProvider.isLoading,
-        child: Container(
-          padding: EdgeInsets.all(20),
-          width: size.width,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: FlatButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return Container(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                                child: Container(
-                                  padding: EdgeInsets.all(20),
-                                  height: size.height * 0.3,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      TextFormField(
-                                        controller: _notes,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
-                                          isDense: true,
-                                          hintText: 'Write note here ...',
-                                        ),
-                                        maxLines: 4,
-                                        minLines: 4,
-                                      ),
-                                      Container(
-                                        width: 200,
-                                        child: FlatButton(
-                                          onPressed: () async {
-                                            await notesProvider.addNote(_notes.value.text.trim());
-                                            Navigator.pop(context);
-                                            await notesProvider.fetchNotes();
-                                          },
-                                          child: Text(
-                                            'Add Note',
-                                            style: kWhiteButtonTextStyle,
-                                            maxLines: 1,
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, 'home');
+            },
+            child: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+            ),
+          ),
+          title: Text('Notes'),
+        ),
+        body: ModalProgressHUD(
+          inAsyncCall: notesProvider.isLoading,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            width: size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: FlatButton(
+                        onPressed: () {
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (context) {
+                                return Container(
+                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                  child: Container(
+                                    padding: EdgeInsets.all(20),
+                                    height: size.height * 0.3,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        TextFormField(
+                                          controller: _notes,
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
+                                            isDense: true,
+                                            hintText: 'Write note here ...',
                                           ),
-                                          color: kPrimaryColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
+                                          maxLines: 4,
+                                          minLines: 4,
+                                        ),
+                                        Container(
+                                          width: 200,
+                                          child: FlatButton(
+                                            onPressed: () async {
+                                              await notesProvider.addNote(_notes.value.text.trim());
+                                              Navigator.pop(context);
+                                              await notesProvider.fetchNotes();
+                                            },
+                                            child: Text(
+                                              'Add Note',
+                                              style: kWhiteButtonTextStyle,
+                                              maxLines: 1,
+                                            ),
+                                            color: kPrimaryColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            });
-                      },
-                      child: Text(
-                        '+    NEW',
-                        style: kWhiteButtonTextStyle,
-                        maxLines: 1,
-                      ),
-                      color: kPrimaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                                );
+                              });
+                        },
+                        child: Text(
+                          '+    NEW',
+                          style: kWhiteButtonTextStyle,
+                          maxLines: 1,
+                        ),
+                        color: kPrimaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 50),
-                  Expanded(
-                    flex: 3,
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, 'upcomingReminders');
-                      },
-                      child: Text(
-                        'Upcoming reminders',
-                        style: kWhiteButtonTextStyle,
-                        maxLines: 1,
-                      ),
-                      color: kPrimaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                    SizedBox(width: 50),
+                    Expanded(
+                      flex: 3,
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, 'upcomingReminders');
+                        },
+                        child: Text(
+                          'Upcoming reminders',
+                          style: kWhiteButtonTextStyle,
+                          maxLines: 1,
+                        ),
+                        color: kPrimaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: notesProvider.notesList.length > 0 ? notesProvider.notesList.length : 0,
-                  itemBuilder: (context, index) {
-                    var note = notesProvider.notesList[index];
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            note.date.day.toString() + '/' + note.date.month.toString() + '/' + note.date.year.toString(),
-                            style: kBlueTextStyle,
-                          ),
-                          SizedBox(height: 5),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(note.note, style: kAppbarButtonTextStyle),
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 125,
-                                child: FlatButton(
-                                  onPressed: () {
-                                    _selectDate(context, note.docId);
-                                  },
-                                  child: Text(
-                                    'Set a reminder',
-                                    style: kWhiteButtonTextStyle,
-                                    maxLines: 1,
-                                  ),
-                                  color: kPrimaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              Container(
-                                width: 40,
-                                child: FlatButton(
-                                  onPressed: () {
-                                    _onDeletePressed(note);
-                                  },
-                                  child: Icon(FontAwesomeIcons.trash, color: Colors.white, size: 15),
-                                  color: kCancelButtonColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  padding: EdgeInsets.all(0),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  ],
                 ),
-              )
-            ],
+                SizedBox(height: 30),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: notesProvider.notesList.length > 0 ? notesProvider.notesList.length : 0,
+                    itemBuilder: (context, index) {
+                      var note = notesProvider.notesList[index];
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              note.date.day.toString() + '/' + note.date.month.toString() + '/' + note.date.year.toString(),
+                              style: kBlueTextStyle,
+                            ),
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(note.note, style: kAppbarButtonTextStyle),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                  width: 125,
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      _selectDate(context, note.docId);
+                                    },
+                                    child: Text(
+                                      'Set a reminder',
+                                      style: kWhiteButtonTextStyle,
+                                      maxLines: 1,
+                                    ),
+                                    color: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Container(
+                                  width: 40,
+                                  child: FlatButton(
+                                    onPressed: () {
+                                      _onDeletePressed(note);
+                                    },
+                                    child: Icon(FontAwesomeIcons.trash, color: Colors.white, size: 15),
+                                    color: kCancelButtonColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    padding: EdgeInsets.all(0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

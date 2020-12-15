@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/models/orderModel.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +22,46 @@ class _LatestOrdersState extends State<LatestOrders> {
       orderProvider.fetchAgents();
     });
     super.initState();
+  }
+
+  Future<bool> _onCancelPressed(String docID) {
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                'Are you sure?',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              content: Text(
+                'Do you want to cancel this order ?',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('NO'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                FlatButton(
+                  child: Text('YES'),
+                  onPressed: () async {
+                    orderProvider.cancelOrder(docID);
+                    Navigator.of(context).pop(false);
+                  },
+                )
+              ],
+            );
+          },
+        ) ??
+        false;
   }
 
   @override
@@ -95,7 +136,9 @@ class _LatestOrdersState extends State<LatestOrders> {
                                     children: [
                                       Expanded(
                                         child: FlatButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _onCancelPressed(order.id);
+                                          },
                                           child: Text('Cancel Order', style: kWhiteButtonTextStyle),
                                           color: kCancelButtonColor,
                                           shape: RoundedRectangleBorder(
@@ -106,7 +149,17 @@ class _LatestOrdersState extends State<LatestOrders> {
                                       SizedBox(width: 5),
                                       Expanded(
                                         child: FlatButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            orderProvider.selectedOrder = OrderModel(
+                                              name: order['name'],
+                                              address: order['address'],
+                                              phoneNumber: order['phone'],
+                                              orderDetails: order['order_details'],
+                                              amount: order['amount'],
+                                              orderDocID: order.id,
+                                            );
+                                            Navigator.pushNamed(context, 'details');
+                                          },
                                           child: Text(
                                             'Order details',
                                             style: kWhiteButtonTextStyle,

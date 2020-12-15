@@ -15,6 +15,46 @@ class ScheduledDeliveries extends StatefulWidget {
 class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
   FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  Future<bool> _onCancelPressed(String docID) {
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                'Are you sure?',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              content: Text(
+                'Do you want to cancel this order ?',
+                style: TextStyle(
+                  color: Colors.black87,
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('NO'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                FlatButton(
+                  child: Text('YES'),
+                  onPressed: () async {
+                    orderProvider.cancelOrder(docID);
+                    Navigator.of(context).pop(false);
+                  },
+                )
+              ],
+            );
+          },
+        ) ??
+        false;
+  }
+
   @override
   void initState() {
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
@@ -106,7 +146,9 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                                         children: [
                                           Expanded(
                                             child: FlatButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                _onCancelPressed(order.id);
+                                              },
                                               child: Text('Cancel Order', style: kWhiteButtonTextStyle),
                                               color: kCancelButtonColor,
                                               shape: RoundedRectangleBorder(

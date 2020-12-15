@@ -15,10 +15,11 @@ class OrderDetails extends StatefulWidget {
 
 class _OrderDetailsState extends State<OrderDetails> {
   Map<String, bool> options = {
-    'cash': false,
-    'gpay': false,
-    'phonepe': false,
-    'paytm': false,
+    'Cash': false,
+    'GPay': false,
+    'PhonePe': false,
+    'Paytm': false,
+    'PayLater': false,
   };
   String paymentMethod = '';
 

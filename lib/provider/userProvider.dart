@@ -62,6 +62,10 @@ class UserProvider extends ChangeNotifier {
     for (var d in res.docs) {
       if (newUser.phone == d['phone']) {
         loggedInUser.isVerified = d['isVerified'];
+        loggedInUser.phone = d['phone'];
+        loggedInUser.role = d['role'];
+        loggedInUser.name = d['name'];
+        loggedInUser.docID = d.id;
         return true;
       }
     }
@@ -70,7 +74,6 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> registerNewUser() async {
     toggleIsLoading();
-    loggedInUser = newUser;
     bool result = await checkUser();
     print(result);
     if (result == false) {

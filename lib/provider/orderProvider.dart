@@ -53,6 +53,13 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> cancelOrder(String orderId) async {
+    toggleIsLoading();
+    await _db.collection('orders').doc(orderId).delete();
+    toggleIsLoading();
+    notifyListeners();
+  }
+
   Future<void> assignAgent(String orderId, String agentId, String agentName) async {
     toggleIsLoading();
     await _db.collection('orders').doc(orderId).update(

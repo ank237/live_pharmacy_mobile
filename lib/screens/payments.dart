@@ -38,7 +38,7 @@ class _PaymentsState extends State<Payments> {
                       isDense: true,
                     ),
                     value: dropDownValue,
-                    items: ['All Methods', 'gpay', 'phonepe', 'paytm', 'cash']
+                    items: ['All Methods', 'GPay', 'PhonePe', 'Paytm', 'Cash', 'PayLater']
                         .map((label) => DropdownMenuItem(
                               child: Text(label.toString()),
                               value: label,
@@ -96,7 +96,17 @@ class _PaymentsState extends State<Payments> {
                                       SizedBox(width: 10),
                                       Container(
                                         child: FlatButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            orderProvider.selectedOrder = OrderModel(
+                                              name: order['name'],
+                                              address: order['address'],
+                                              phoneNumber: order['phone'],
+                                              orderDetails: order['order_details'],
+                                              amount: order['amount'],
+                                              orderDocID: order.id,
+                                            );
+                                            Navigator.pushNamed(context, 'details');
+                                          },
                                           child: Text(
                                             'Order details',
                                             style: kWhiteButtonTextStyle,
