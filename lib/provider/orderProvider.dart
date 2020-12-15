@@ -16,7 +16,7 @@ class OrderProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> markOrderDelivered(String payment, String userID) async {
+  Future<void> markOrderDelivered(String payment, String userID, String imageUrl) async {
     toggleIsLoading();
     await _db.collection('orders').doc(selectedForDelivery.orderDocID).update({
       'is_delivered': true,
@@ -24,6 +24,7 @@ class OrderProvider extends ChangeNotifier {
       'delivery_date': DateTime.now(),
       'mode_of_payment': payment,
       'delivered_by': 'na',
+      'screenshot': imageUrl,
       'is_paid': true,
     });
     var res = await _db.collection('users').doc(userID).collection('deliveries').get();

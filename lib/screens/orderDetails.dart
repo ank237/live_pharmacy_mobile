@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
@@ -22,6 +26,32 @@ class _OrderDetailsState extends State<OrderDetails> {
     'PayLater': false,
   };
   String paymentMethod = '';
+  File _image;
+  final picker = ImagePicker();
+  String imageUrl = 'image url';
+
+  Future getImage() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final orderProvider = Provider.of<OrderProvider>(context, listen: false);
+    orderProvider.toggleIsLoading();
+    final pickedFile = await picker.getImage(source: ImageSource.camera, imageQuality: 10);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      Reference reference = FirebaseStorage.instance.ref().child("Screenshots/" + userProvider.loggedInUser.name + DateTime.now().toString());
+      UploadTask uploadTask = reference.putFile(_image);
+      String url = 'some url';
+      await uploadTask.whenComplete(() async {
+        url = await reference.getDownloadURL();
+      });
+      setState(() {
+        imageUrl = url;
+      });
+    }
+    print(imageUrl);
+    orderProvider.toggleIsLoading();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +182,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                         width: 100,
                         child: FlatButton(
                           onPressed: () async {
-                            await orderProvider.markOrderDelivered(paymentMethod, userProvider.loggedInUser.docID);
+                            await orderProvider.markOrderDelivered(paymentMethod, userProvider.loggedInUser.docID, imageUrl);
                             Fluttertoast.showToast(msg: 'Order marked delivered');
                             Navigator.pushNamed(context, 'deliveries');
                           },
@@ -174,6 +204,11 @@ class _OrderDetailsState extends State<OrderDetails> {
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        backgroundColor: kPrimaryColor,
+        child: Icon(Icons.camera_alt),
       ),
     );
   }

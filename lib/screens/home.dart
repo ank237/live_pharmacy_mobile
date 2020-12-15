@@ -59,15 +59,6 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  void initState() {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    if (userProvider.loggedInUser.role == 'manager') {
-      boxValues.removeAt(4);
-    }
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final userProvider = Provider.of<UserProvider>(context);
@@ -127,25 +118,23 @@ class _HomeState extends State<Home> {
                   },
                 ),
               ),
-              userProvider.loggedInUser.role == 'admin'
-                  ? Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      width: size.width,
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: size.width * 0.7,
-                        child: FlatButton(
-                          color: kPrimaryColor,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                          onPressed: () {
-                            Navigator.pushNamed(context, 'verifyUsers');
-                          },
-                          child: Text('Verify Users', style: kLargeWhiteTextStyle),
-                        ),
-                      ),
-                    )
-                  : Container(),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                width: size.width,
+                alignment: Alignment.center,
+                child: Container(
+                  width: size.width * 0.7,
+                  child: FlatButton(
+                    color: kPrimaryColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                    onPressed: () {
+                      Navigator.pushNamed(context, 'verifyUsers');
+                    },
+                    child: Text('Verify Users', style: kLargeWhiteTextStyle),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -13,9 +13,11 @@ class OrderModel {
   bool isPaid;
   DateTime orderCreatedDate;
   String orderDocID;
+  String screenshot;
 
   OrderModel({
     this.name,
+    this.screenshot,
     this.phoneNumber,
     this.date,
     this.amount,

@@ -98,6 +98,7 @@ class _PastOrderState extends State<PastOrder> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
+                                              screenshot: order['screenshot'],
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },
