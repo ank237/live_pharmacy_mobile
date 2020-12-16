@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/orderModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +23,8 @@ class _CreateOrderState extends State<CreateOrder> {
   TextEditingController _address = TextEditingController();
   TextEditingController _phoneNumber = TextEditingController();
   TextEditingController _orderDetails = TextEditingController();
-  TextEditingController _billingAmount = TextEditingController();
+  TextEditingController _billingAmount = TextEditingController(text: '0');
+  TextEditingController _duesAmount = TextEditingController(text: '0');
   TextEditingController _date = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
@@ -49,12 +53,7 @@ class _CreateOrderState extends State<CreateOrder> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, 'profile');
-            },
-            child: Icon(FontAwesomeIcons.solidUserCircle)),
-        title: Text('Live Pharmacy'),
+        title: Text('Live Pharmacy'+' ( '+Stores.dropdownValue+' )'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: orderProvider.isSaving,
@@ -100,14 +99,31 @@ class _CreateOrderState extends State<CreateOrder> {
                   TextFormField(
                     controller: _phoneNumber,
                     keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     style: TextStyle(
                       color: kPrimaryColor,
                       fontWeight: FontWeight.w700,
                     ),
+                    onFieldSubmitted: (String value) async {
+                      var res = await FirebaseFirestore.instance.collection('customers'+' '+Stores.dropdownValue).where('phone',isEqualTo: value).get();
+                      if(!res.docs.isEmpty)
+                      for (var d in res.docs) {
+                        _name.text=d['name'];
+                        _address.text=d['address'];
+
+                      }
+                      else{
+                        _name.text='';
+                        _address.text='';
+                      }
+
+                    },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
                       isDense: true,
                     ),
+
+
                   ),
                   SizedBox(height: 20),
                   Text('Order Details', style: kLargeBlueTextStyle),
@@ -126,11 +142,28 @@ class _CreateOrderState extends State<CreateOrder> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  Text('Dues', style: kLargeBlueTextStyle),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    controller: _duesAmount,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    style: TextStyle(
+                      color: kPrimaryColor,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
+                      isDense: true,
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   Text('Billing Amount', style: kLargeBlueTextStyle),
                   SizedBox(height: 10),
                   TextFormField(
                     controller: _billingAmount,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     style: TextStyle(
                       color: kPrimaryColor,
                       fontWeight: FontWeight.w700,
@@ -197,6 +230,7 @@ class _CreateOrderState extends State<CreateOrder> {
                             phoneNumber: _phoneNumber.value.text,
                             orderDetails: _orderDetails.value.text,
                             amount: _billingAmount.value.text,
+                            dues : _duesAmount.value.text,
                             date: selectedDate,
                             isRepeating: repeating,
                             isDelivered: false,
@@ -207,6 +241,9 @@ class _CreateOrderState extends State<CreateOrder> {
                             orderCreatedDate: DateTime.now(),
                             orderDocID: '',
                           );
+                          if (repeating == true) {
+                            await orderProvider.saveNewScheduledOrder();
+                          }
                           await orderProvider.saveNewOrder();
                           Fluttertoast.showToast(msg: 'Order Created');
                           Navigator.pushNamed(context, 'home');

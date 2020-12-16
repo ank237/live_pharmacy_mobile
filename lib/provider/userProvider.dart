@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/models/userModel.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -32,9 +33,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<int> getTotalOrderDelivered() async {
     int ans = 0;
-    var res = await _db.collection('users').doc(loggedInUser.docID).collection('deliveries').get();
+    var res = await _db.collection('users').doc(loggedInUser.docID).collection('deliveries').where('date',isGreaterThanOrEqualTo: new DateTime.now().subtract(Duration(days: 2))).get();
     for (var d in res.docs) {
-      if (d['delivered'] == true) {
+      DateTime date = d['date'].toDate();
+      if (d['delivered'] == true && date.day == DateTime.now().day) {
         ans += 1;
       }
     }

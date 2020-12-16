@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/notesModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/notesProvider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -38,41 +39,41 @@ class _NotesState extends State<Notes> {
   Future<bool> _onDeletePressed(NotesModel note) {
     final notesProvider = Provider.of<NotesProvider>(context, listen: false);
     return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                'Do you want to want to delete this note ?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('NO'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                FlatButton(
-                  child: Text('YES'),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await notesProvider.deleteNote(note.docId);
-                    await notesProvider.fetchNotes();
-                  },
-                )
-              ],
-            );
-          },
-        ) ??
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          content: Text(
+            'Do you want to want to delete this note ?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('NO'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('YES'),
+              onPressed: () async {
+                Navigator.pop(context);
+                await notesProvider.deleteNote(note.docId);
+                await notesProvider.fetchNotes();
+              },
+            )
+          ],
+        );
+      },
+    ) ??
         false;
   }
 
@@ -102,7 +103,7 @@ class _NotesState extends State<Notes> {
               color: Colors.white,
             ),
           ),
-          title: Text('Notes'),
+          title: Text('Notes'+' ( '+Stores.dropdownValue+' )'),
         ),
         body: ModalProgressHUD(
           inAsyncCall: notesProvider.isLoading,

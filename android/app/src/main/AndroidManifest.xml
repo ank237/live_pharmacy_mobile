@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.battlerooms.live_pharmacy">
+    package="com.battlerooms.livepharmacy">
    <application
         android:label="live_pharmacy"
         android:icon="@mipmap/ic_launcher">

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:live_pharmacy/models/notesModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 
 class NotesProvider extends ChangeNotifier {
   List<NotesModel> notesList = [];
@@ -16,7 +17,7 @@ class NotesProvider extends ChangeNotifier {
   Future<void> fetchNotes() async {
     toggleIsLoading();
     notesList.clear();
-    var res = await _db.collection('notes').get();
+    var res = await _db.collection('notes'+' '+Stores.dropdownValue).get();
     for (var d in res.docs) {
       notesList.add(NotesModel(
         note: d['note'],
@@ -31,7 +32,7 @@ class NotesProvider extends ChangeNotifier {
 
   Future<void> addNote(String note) async {
     toggleIsLoading();
-    await _db.collection('notes').add({
+    await _db.collection('notes'+' '+Stores.dropdownValue).add({
       'note': note,
       'date': DateTime.now(),
       'reminder': DateTime.now().add(
@@ -44,14 +45,14 @@ class NotesProvider extends ChangeNotifier {
 
   Future<void> deleteNote(String noteID) async {
     toggleIsLoading();
-    await _db.collection('notes').doc(noteID).delete();
+    await _db.collection('notes'+' '+Stores.dropdownValue).doc(noteID).delete();
     toggleIsLoading();
     notifyListeners();
   }
 
   Future<void> deleteReminder(String noteID, DateTime date) async {
     toggleIsLoading();
-    await _db.collection('notes').doc(noteID).update({
+    await _db.collection('notes'+' '+Stores.dropdownValue).doc(noteID).update({
       'reminder': date.add(Duration(days: 365)),
     });
     toggleIsLoading();
@@ -60,7 +61,7 @@ class NotesProvider extends ChangeNotifier {
 
   Future<void> setReminder(String noteID, DateTime reminder) async {
     toggleIsLoading();
-    await _db.collection('notes').doc(noteID).update({
+    await _db.collection('notes'+' '+Stores.dropdownValue).doc(noteID).update({
       'reminder': reminder,
     });
     toggleIsLoading();
@@ -70,7 +71,7 @@ class NotesProvider extends ChangeNotifier {
   Future<void> fetchReminders() async {
     toggleIsLoading();
     remindersList.clear();
-    var res = await _db.collection('notes').get();
+    var res = await _db.collection('notes'+' '+Stores.dropdownValue).get();
     for (var d in res.docs) {
       DateTime date = d['date'].toDate();
       DateTime reminder = d['reminder'].toDate();

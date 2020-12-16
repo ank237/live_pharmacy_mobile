@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/orderModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -27,40 +28,40 @@ class _LatestOrdersState extends State<LatestOrders> {
   Future<bool> _onCancelPressed(String docID) {
     final orderProvider = Provider.of<OrderProvider>(context, listen: false);
     return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                'Do you want to cancel this order ?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('NO'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                FlatButton(
-                  child: Text('YES'),
-                  onPressed: () async {
-                    orderProvider.cancelOrder(docID);
-                    Navigator.of(context).pop(false);
-                  },
-                )
-              ],
-            );
-          },
-        ) ??
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          content: Text(
+            'Do you want to cancel this order ?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('NO'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('YES'),
+              onPressed: () async {
+                orderProvider.cancelOrder(docID);
+                Navigator.of(context).pop(false);
+              },
+            )
+          ],
+        );
+      },
+    ) ??
         false;
   }
 
@@ -70,7 +71,7 @@ class _LatestOrdersState extends State<LatestOrders> {
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Latest'),
+        title: Text('Latest'+' ( '+Stores.dropdownValue+' )'),
       ),
       body: Container(
         width: size.width,
@@ -79,7 +80,7 @@ class _LatestOrdersState extends State<LatestOrders> {
             Expanded(
               child: SingleChildScrollView(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _db.collection('orders').orderBy('order_created_date', descending: true).snapshots(),
+                  stream: _db.collection('orders'+' '+Stores.dropdownValue).orderBy('order_created_date', descending: true).snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator(
@@ -157,6 +158,7 @@ class _LatestOrdersState extends State<LatestOrders> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
+                                              dues: order['dues'],
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },

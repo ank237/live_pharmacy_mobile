@@ -1,42 +1,41 @@
 {
   "project_info": {
-    "project_number": "454405923694",
-    "firebase_url": "https://live-project-c6320.firebaseio.com",
-    "project_id": "live-project-c6320",
-    "storage_bucket": "live-project-c6320.appspot.com"
+    "project_number": "598015282379",
+    "project_id": "live-pharmacy-de1c0",
+    "storage_bucket": "live-pharmacy-de1c0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:454405923694:android:784123a9f5d472bdc7d77f",
+        "mobilesdk_app_id": "1:598015282379:android:1bc8aeba8c2f7f71201f4e",
         "android_client_info": {
-          "package_name": "com.battlerooms.live_pharmacy"
+          "package_name": "com.battlerooms.livepharmacy"
         }
       },
       "oauth_client": [
         {
-          "client_id": "454405923694-o295j5rlkmd9euvv59umpd12tejss6b7.apps.googleusercontent.com",
+          "client_id": "598015282379-41jmuldme06dsj1vdqrcf51291u35ovr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.battlerooms.live_pharmacy",
-            "certificate_hash": "b8d259dc8695ebd598a4f153b7a874d8362973e4"
+            "package_name": "com.battlerooms.livepharmacy",
+            "certificate_hash": "042e98b3285e4a092fad6b4d8e6100b72238e333"
           }
         },
         {
-          "client_id": "454405923694-j6le9usja8nsvt7kbve55pap7467t7du.apps.googleusercontent.com",
+          "client_id": "598015282379-ao0dmpbisnpvqoma09c8qcg1kihic2ap.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD-EbqzwIjxZTz2a2CIf5NPsekpqjTykMU"
+          "current_key": "AIzaSyA9T_kJX6-Y4vtduT_E4xkDlD-n5lSdrzA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "454405923694-j6le9usja8nsvt7kbve55pap7467t7du.apps.googleusercontent.com",
+              "client_id": "598015282379-ao0dmpbisnpvqoma09c8qcg1kihic2ap.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

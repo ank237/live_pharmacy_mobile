@@ -3,7 +3,7 @@ class OrderModel {
   String address;
   String phoneNumber;
   String orderDetails;
-  String amount;
+  String amount,dues;
   DateTime date;
   bool isRepeating;
   bool isDelivered;
@@ -14,9 +14,14 @@ class OrderModel {
   DateTime orderCreatedDate;
   String orderDocID;
   String screenshot;
+  // ignore: non_constant_identifier_names
+  String agentName;
+
+
 
   OrderModel({
     this.name,
+    this.agentName,
     this.screenshot,
     this.phoneNumber,
     this.date,
@@ -31,5 +36,7 @@ class OrderModel {
     this.orderCreatedDate,
     this.orderDetails,
     this.orderDocID,
+    this.dues,
   });
+
 }
