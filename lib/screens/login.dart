@@ -22,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   int forceResendingTokenValue;
   String verificationIdValue;
   String pinEntered;
+  bool _showVerify = false;
 
   Future<void> loginUser(String phone, BuildContext context) async {
     await _auth.verifyPhoneNumber(
@@ -148,58 +149,69 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizedBox(height: 20),
-                      Container(
-                        width: size.width,
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 175,
-                          child: FlatButton(
-                            color: kPrimaryColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-                            onPressed: () {
-                              Fluttertoast.showToast(msg: 'OTP sent');
-                              FocusScope.of(context).unfocus();
-                              if (_form.currentState.validate()) {
-                                setState(() {
-                                  phoneNumber = '+91' + _number.value.text.trim();
-                                  print(phoneNumber);
-                                  loginUser(phoneNumber, context);
-                                });
-                              }
-                            },
-                            child: Text('Send OTP', style: kLargeWhiteTextStyle),
-                          ),
-                        ),
-                      ),
+                      _showVerify
+                          ? Container()
+                          : Container(
+                              width: size.width,
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: 175,
+                                child: FlatButton(
+                                  color: kPrimaryColor,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                                  onPressed: () {
+                                    setState(() {
+                                      _showVerify = !_showVerify;
+                                    });
+                                    Fluttertoast.showToast(msg: 'OTP sent');
+                                    FocusScope.of(context).unfocus();
+                                    if (_form.currentState.validate()) {
+                                      setState(() {
+                                        phoneNumber = '+91' + _number.value.text.trim();
+                                        print(phoneNumber);
+                                        loginUser(phoneNumber, context);
+                                      });
+                                    }
+                                  },
+                                  child: Text('Send OTP', style: kLargeWhiteTextStyle),
+                                ),
+                              ),
+                            ),
                       SizedBox(height: 40),
-                      Text('Enter OTP', style: kLargeBlueTextStyle),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        controller: _otp,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
-                          isDense: true,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        width: size.width,
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 175,
-                          child: FlatButton(
-                            color: kPrimaryColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
-                            onPressed: () {
-                              codeSentFunction(verificationIdValue, forceResendingTokenValue);
-                            },
-                            child: Text('Verify', style: kLargeWhiteTextStyle),
-                          ),
-                        ),
-                      ),
+                      _showVerify
+                          ? Column(
+                              children: [
+                                Text('Enter OTP', style: kLargeBlueTextStyle),
+                                SizedBox(height: 10),
+                                TextFormField(
+                                  controller: _otp,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(borderSide: BorderSide(color: kPrimaryColor, width: 1)),
+                                    isDense: true,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Container(
+                                  width: size.width,
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    width: 175,
+                                    child: FlatButton(
+                                      color: kPrimaryColor,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 0),
+                                      onPressed: () {
+                                        codeSentFunction(verificationIdValue, forceResendingTokenValue);
+                                      },
+                                      child: Text('Verify', style: kLargeWhiteTextStyle),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Container(),
                     ],
                   ),
                 )
