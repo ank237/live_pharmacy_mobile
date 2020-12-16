@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/orderModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +45,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                 FlatButton(
                   child: Text('YES'),
                   onPressed: () async {
-                    orderProvider.cancelOrder(docID);
+                    orderProvider.cancelScheduledOrder(docID);
                     Navigator.of(context).pop(false);
                   },
                 )
@@ -70,7 +71,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scheduled Deliveries'),
+        title: Text('Scheduled Deliveries'+' ( '+Stores.dropdownValue+' )'),
       ),
       body: Container(
         width: size.width,
@@ -80,7 +81,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
             Flexible(
               child: SingleChildScrollView(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _db.collection('orders').orderBy('delivery_date', descending: false).snapshots(),
+                  stream: _db.collection('scheduled'+' '+Stores.dropdownValue).orderBy('delivery_date', descending: false).snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator(
@@ -90,8 +91,8 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                     final orders = snapshot.data.docs;
                     List<Widget> orderWidget = [];
                     for (var order in orders) {
-                      if (order['is_repeating'] == true && order['delivered_by'] == 'na') {
-                        DateTime date = order['delivery_date'].toDate();
+                      DateTime date = order['delivery_date'].toDate();
+                      if (date.isBefore(DateTime.now().add(Duration(days: 7)))) {
                         date = date.add(Duration(days: 30));
                         orderWidget.add(
                           Card(
@@ -162,6 +163,7 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                                               orderDetails: order['order_details'],
                                               amount: order['amount'],
                                               orderDocID: order.id,
+                                              dues: order['dues'],
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },
@@ -204,7 +206,23 @@ class _ScheduledDeliveriesState extends State<ScheduledDeliveries> {
                                                             color: kPrimaryColor,
                                                             child: Text('Assign', style: kWhiteButtonTextStyle),
                                                             onPressed: () {
-                                                              orderProvider.assignAgent(order.id, agent.docId, agent.name);
+                                                              OrderModel orderValues = OrderModel(
+                                                                name: order['name'],
+                                                                address: order['address'],
+                                                                phoneNumber: order['phone'],
+                                                                orderDetails: order['order_details'],
+                                                                amount: order['amount'],
+                                                                date: date,
+                                                                isRepeating: true,
+                                                                isDelivered: false,
+                                                                deliveredBy: agent.docId,
+                                                                deliveredOn: '',
+                                                                modeOfPayment: '',
+                                                                isPaid: false,
+                                                                orderCreatedDate: order['order_created_date'].toDate(),
+                                                                dues: order['dues'],
+                                                              );
+                                                              orderProvider.assignAgentForScheduledOrder(order.id, agent.docId, agent.name, orderValues);
                                                               Navigator.pop(context);
                                                               Fluttertoast.showToast(msg: '${agent.name} assigned for this order');
                                                             },

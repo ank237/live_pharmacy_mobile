@@ -37,7 +37,7 @@ class _VerificationState extends State<Verification> {
                 FlatButton(
                   child: Text('YES'),
                   onPressed: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                    Navigator.pushNamed(context, 'initial');
                   },
                 )
               ],
@@ -64,10 +64,31 @@ class _VerificationState extends State<Verification> {
         body: Center(
           child: Container(
             padding: EdgeInsets.all(30),
-            child: Text(
-              'You are not verified yet! Please try again later',
-              style: kLargeBlueTextStyle,
+            child: Column(
+              children: [
+                Text(
+                  'You are not verified yet! Please try again later',
+                  style: kLargeBlueTextStyle,
+                ),
+                SizedBox(height: 50,),
+                Text(
+                  'Verified ?? Reload',
+                  style: kLargeBlueTextStyle,
+                ),
+                SizedBox(height: 10,),
+                FlatButton(
+                  color: kPrimaryColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                  onPressed: () {
+                    Navigator.pushNamed(context, 'initial');
+                  },
+                  child: Text('Reload', style: kLargeWhiteTextStyle),
+                ),
+
+              ],
             ),
+
           ),
         ),
       ),

@@ -32,7 +32,8 @@ class Profile extends StatelessWidget {
                 Container(
                   width: size.width,
                   margin: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
-                  child: FlatButton(
+                  child:
+                  FlatButton(
                     padding: EdgeInsets.all(15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),

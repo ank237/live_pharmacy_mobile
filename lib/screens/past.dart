@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/orderModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/orderProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class _PastOrderState extends State<PastOrder> {
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Past deliveries'),
+        title: Text('Past deliveries'+' ( '+Stores.dropdownValue+' )'),
       ),
       body: Container(
         width: size.width,
@@ -28,7 +29,7 @@ class _PastOrderState extends State<PastOrder> {
             Expanded(
               child: SingleChildScrollView(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: _db.collection('orders').orderBy('order_created_date', descending: true).snapshots(),
+                  stream: _db.collection('orders'+' '+Stores.dropdownValue).orderBy('order_created_date', descending: true).snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return CircularProgressIndicator(
@@ -105,6 +106,8 @@ class _PastOrderState extends State<PastOrder> {
                                               amount: order['amount'],
                                               orderDocID: order.id,
                                               screenshot: imageUrl,
+                                                agentName: order['agent_name'],
+                                              dues: order['dues'],
                                             );
                                             Navigator.pushNamed(context, 'details');
                                           },

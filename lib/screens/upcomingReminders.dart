@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
 import 'package:live_pharmacy/models/notesModel.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/notesProvider.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
@@ -15,40 +16,40 @@ class _UpcomingRemindersState extends State<UpcomingReminders> {
   Future<bool> _onDeletePressed(NotesModel note) {
     final notesProvider = Provider.of<NotesProvider>(context, listen: false);
     return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                'Do you want to want to delete this reminder ?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('NO'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                FlatButton(
-                  child: Text('YES'),
-                  onPressed: () async {
-                    Navigator.pop(context);
-                    await notesProvider.deleteReminder(note.docId, note.date);
-                  },
-                )
-              ],
-            );
-          },
-        ) ??
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          content: Text(
+            'Do you want to want to delete this reminder ?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('NO'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('YES'),
+              onPressed: () async {
+                Navigator.pop(context);
+                await notesProvider.deleteReminder(note.docId, note.date);
+              },
+            )
+          ],
+        );
+      },
+    ) ??
         false;
   }
 
@@ -66,7 +67,7 @@ class _UpcomingRemindersState extends State<UpcomingReminders> {
     final notesProvider = Provider.of<NotesProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upcoming Reminders'),
+        title: Text('Upcoming Reminders'+' ( '+Stores.dropdownValue+' )'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: notesProvider.isLoading,

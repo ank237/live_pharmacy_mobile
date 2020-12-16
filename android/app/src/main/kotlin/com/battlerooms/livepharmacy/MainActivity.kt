@@ -1,4 +1,4 @@
-package com.battlerooms.live_pharmacy
+package com.battlerooms.livepharmacy
 
 import io.flutter.embedding.android.FlutterActivity
 

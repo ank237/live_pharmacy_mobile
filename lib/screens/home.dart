@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:live_pharmacy/constants/styles.dart';
+import 'package:live_pharmacy/models/store.dart';
 import 'package:live_pharmacy/provider/userProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,45 +19,57 @@ class _HomeState extends State<Home> {
     BoxModel(onTapFunc: 'scheduled', image: 'schedule', name: 'Scheduled deliveries'),
     BoxModel(onTapFunc: 'past', image: 'past', name: 'Past Deliveries'),
     BoxModel(onTapFunc: 'payments', image: 'payments', name: 'Payments'),
+    BoxModel(onTapFunc: 'summary', image: 'summary', name: 'Summary'),
     BoxModel(onTapFunc: 'notes', image: 'notes', name: 'Notes'),
   ];
+  var prefs;
+
 
   Future<bool> _onBackPressed() {
     return showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Text(
-                'Are you sure?',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              content: Text(
-                'Do you want to exit the app',
-                style: TextStyle(
-                  color: Colors.black87,
-                ),
-              ),
-              actions: <Widget>[
-                FlatButton(
-                  child: Text('NO'),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                ),
-                FlatButton(
-                  child: Text('YES'),
-                  onPressed: () {
-                    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  },
-                )
-              ],
-            );
-          },
-        ) ??
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            'Are you sure?',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          content: Text(
+            'Do you want to exit the app',
+            style: TextStyle(
+              color: Colors.black87,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('NO'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: Text('YES'),
+              onPressed: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            )
+          ],
+        );
+      },
+    ) ??
         false;
+  }
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      prefs = await SharedPreferences.getInstance();
+
+      Stores.dropdownValue = prefs.getString('counter') ?? 'Select Store';
+    });
+    super.initState();
   }
 
   @override
@@ -73,6 +87,37 @@ class _HomeState extends State<Home> {
               child: Icon(FontAwesomeIcons.solidUserCircle)),
           title: Text('Live Pharmacy'),
           actions: [
+            Center(
+              child: InkWell(
+                child: DropdownButton<String>(
+                  value: Stores.dropdownValue,
+                  icon: Icon(Icons.arrow_drop_down),
+                  iconEnabledColor: Colors.red,
+                  iconSize: 22,
+                  elevation: 10,
+                  style: TextStyle(color: Colors.red, fontSize: 16,fontWeight: FontWeight.bold),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.red,
+                  ),
+                  onChanged: (String data) {
+                    setState(() {
+                      Stores.dropdownValue = data;
+                      prefs.setString('counter', data);
+                    });
+                  },
+                  items: Stores.spinnerItems.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+
+              ),
+            ),
+            SizedBox(width: 10),
+            if(Stores.dropdownValue!='Select Store')
             InkWell(
               child: Icon(FontAwesomeIcons.solidBell),
               onTap: () {
@@ -80,6 +125,7 @@ class _HomeState extends State<Home> {
               },
             ),
             SizedBox(width: 10),
+            if(Stores.dropdownValue!='Select Store')
             Center(
               child: InkWell(
                 onTap: () {
@@ -110,11 +156,14 @@ class _HomeState extends State<Home> {
                   itemCount: boxValues.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
                   itemBuilder: (BuildContext context, int index) {
+                    if(Stores.dropdownValue!='Select Store')
                     return HomePageBox(
                       name: boxValues[index].name,
                       image: boxValues[index].image,
                       onTapFunc: boxValues[index].onTapFunc,
-                    );
+                    ) ;
+                    else
+                    return Container();
                   },
                 ),
               ),

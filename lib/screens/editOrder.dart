@@ -12,12 +12,12 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class OrderDetails extends StatefulWidget {
+class EditOrder extends StatefulWidget {
   @override
-  _OrderDetailsState createState() => _OrderDetailsState();
+  _EditOrderState createState() => _EditOrderState();
 }
 
-class _OrderDetailsState extends State<OrderDetails> {
+class _EditOrderState extends State<EditOrder> {
   Map<String, bool> options = {
     'Cash': false,
     'GPay': false,
@@ -29,7 +29,7 @@ class _OrderDetailsState extends State<OrderDetails> {
   String paymentMethod = '';
   File _image;
   final picker = ImagePicker();
-  String imageUrl = 'image url';
+  String imageUrl = 'imageUrl';
 
   Future getImage() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -55,13 +55,21 @@ class _OrderDetailsState extends State<OrderDetails> {
   }
 
   @override
+  void initState() {
+    setState(() {
+      imageUrl = Provider.of<OrderProvider>(context, listen: false).selectedForDelivery.screenshot;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final userProvider = Provider.of<UserProvider>(context);
     final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Order Details'),
+        title: Text('Edit Order'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: orderProvider.isSaving,
@@ -183,7 +191,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             child: FlatButton(
                               onPressed: () async {
                                 await orderProvider.markOrderDelivered(paymentMethod, userProvider.loggedInUser.docID, imageUrl);
-                                Fluttertoast.showToast(msg: 'Order marked delivered');
+                                Fluttertoast.showToast(msg: 'Order Edited');
                                 Navigator.pushNamed(context, 'deliveries');
                               },
                               child: Text(

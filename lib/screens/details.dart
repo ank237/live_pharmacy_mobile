@@ -94,14 +94,33 @@ class _DetailsState extends State<Details> {
                         Text(orderProvider.selectedOrder.orderDetails, style: kOrderCardTextStyle),
                       ],
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
+                    (orderProvider.selectedOrder.dues != "" && orderProvider.selectedOrder.dues != '0' )?
                     Row(
                       children: [
                         Icon(FontAwesomeIcons.rupeeSign, color: kPrimaryColor),
                         SizedBox(width: 10),
-                        Text(orderProvider.selectedOrder.amount, style: kOrderCardTextStyle),
+                        Text('${orderProvider.selectedOrder.amount} ( + dues : ${orderProvider.selectedOrder.dues} )', style: kOrderCardTextStyle),
                       ],
-                    ),
+                    ):
+                    Row(
+                      children: [
+                        Icon(FontAwesomeIcons.rupeeSign, color: kPrimaryColor),
+                        SizedBox(width: 10),
+                        Text('${orderProvider.selectedOrder.amount}', style: kOrderCardTextStyle),
+                      ],
+                    )
+                    ,
+                    SizedBox(height: 5),
+                    orderProvider.selectedOrder.agentName !=null ?
+                    Row(
+                      children: [
+                        Icon(FontAwesomeIcons.truck, color: kPrimaryColor),
+                        SizedBox(width: 10),
+                        Text('${orderProvider.selectedOrder.agentName}', style: kOrderCardTextStyle),
+                      ],
+                    ) :
+                    SizedBox(height: 5),
                     SizedBox(height: 10),
                   ],
                 ),
